@@ -39,17 +39,27 @@ public class UserService {
     }
 
     // Approve Seller
-    public User approveSellerRequest(String id) {
-        User user = userRepo.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+   public User approveSellerRequest(String id) {
 
-        if (user != null) {
-            user.setSellerRequestStatus(RequestStatus.APPROVED);
-            user.setRole(UserRole.SELLER);
-            userRepo.save(user);
-        }
+    try {
 
-        return user;
+        User user = userRepo.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found")
+                );
+
+        user.setSellerRequestStatus(RequestStatus.APPROVED);
+        user.setRole(UserRole.SELLER);
+
+        return userRepo.save(user);
+
+    } catch (Exception e) {
+
+        throw new RuntimeException(
+                "Failed to approve seller request: " + e.getMessage()
+        );
     }
+}
 
     // Reject Seller
     public User rejectSellerRequest(String id) {
